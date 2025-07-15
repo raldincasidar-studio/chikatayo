@@ -18,11 +18,26 @@
             <h2 class="text-h5 font-weight-bold">Mga Diary</h2>
         </v-col>
         <v-col cols="12">
-            <v-list lines="two">
-                <v-list-item to="/" prepend-icon="mdi-pencil" title="Diary 1" subtitle="Date: 2023-05-06"></v-list-item>
-                <v-list-item to="/" prepend-icon="mdi-pencil" title="Diary 2" subtitle="Date: 2023-05-07"></v-list-item>
-                <v-list-item to="/" prepend-icon="mdi-pencil" title="Diary 3" subtitle="Date: 2023-05-08"></v-list-item>
-            </v-list>
+            <div class="preloader my-12 d-flex flex-column align-center justify-center" v-if="loading">
+                <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="50"
+                ></v-progress-circular>
+                <p class="mt-4 text-grey">Kinukuha namin ang iyong diary</p>
+            </div>
+            <div v-else-if="!!diaries.length">
+              <v-list lines="two">
+                  <v-list-item v-for="diary in diaries" :key="diary._id" :to="`/diary/${diary._id}`" prepend-icon="mdi-notebook" :title="diary.analysis.title" :subtitle="diary.date ? dayjs(diary.date).fromNow() : 'No date' " class="mdi-notebook--blue"></v-list-item>
+              </v-list>
+              <div class="text-center" v-if="diaries.length < diariesTotal">
+                <v-btn variant="text" color="primary" prepend-icon="mdi-refresh" @click="fetchDiaries">Load more diaries</v-btn>
+              </div>
+            </div>
+            <div class="my-12 text-center" v-else>
+              <v-icon color="grey" size="50">mdi-circle-outline</v-icon>
+              <h3 class="my-2 text-grey">No diaries yet</h3>
+            </div>
         </v-col>
     </v-row>
 </template>
@@ -38,6 +53,10 @@
 <script setup>
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement)
 
@@ -63,6 +82,22 @@ const chartOptions = {
 //   maintainAspectRatio: false
 }
 
+const diaries = ref([]);
+const diariesTotal = ref(0);
+
+
+
+async function fetchDiaries() {
+  const res = await myFetch("/diary?skip="+diaries.value.length, {});
+
+  if (error.value) {
+    alert(`Error fetching diary: ${error.value}`);
+  }
+
+  diaries.value.push(...res.diaries);
+  diariesTotal.value = res.total;
+}
+
 async function postTest() {
   const res = await myFetch("/diary", {});
 
@@ -72,6 +107,10 @@ async function postTest() {
 
   console.log(res);
 }
+
+onMounted(() => {
+  fetchDiaries();
+});
 
 
 

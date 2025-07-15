@@ -125,6 +125,7 @@ app.post('/api/users', async (req, res) => {
 });
 
 
+
 app.post('/api/diary', securityMiddleware, async (req, res) => {
   const { emotion, audio } = req.body;
 
@@ -149,8 +150,10 @@ app.post('/api/diary', securityMiddleware, async (req, res) => {
     audio: uploadAudioResult.secure_url,
     analysis: analysis[0],
     user: req.user._id,
+    title: analysis[0]?.title || 'Your Diary', 
+    date: analysis[0]?.date || new Date(),
   });
-  res.json({ message: 'Diary created!', result: { emotion, audio: uploadAudioResult.secure_url, id: result.insertedId }, analysis: analysis[0], user: req.user });
+  res.json({ message: 'Diary created!', result: { emotion, audio: uploadAudioResult.secure_url, id: result.insertedId }, analysis: analysis[0],  user: req.user });
 })
 
 
@@ -158,7 +161,21 @@ app.post('/api/diary', securityMiddleware, async (req, res) => {
 // add new diary
 
 app.get('/api/diary', securityMiddleware, async (req, res) => {
-  res.json({ message: 'Diary created!', user: req.user });
+  const limit = 10;
+  const skip = req.query?.skip ? parseInt(req.query.skip) : 0;
+  
+  const diaries = await db.collection('diary').find({ user: new ObjectId(req.user._id) }, { skip, limit, sort: { date: -1 } }).toArray();
+  const totalDiaries = await db.collection('diary').countDocuments({ user: new ObjectId(req.user._id) });
+  res.json({ message: 'Diary is fetched!', diaries, total: totalDiaries });
+
+})
+
+// get diary by id
+
+app.get('/api/diary/:id', securityMiddleware, async (req, res) => {
+  const { id } = req.params;
+  const diary = await db.collection('diary').findOne({ _id: new ObjectId(id) });
+  res.json({ message: 'Diary is fetched!', diary });
 })
 
 
@@ -356,6 +373,10 @@ async function analyzeAudio(audioFilePath) {
     items: {
       type: Type.OBJECT,
       properties: {
+        title: {
+          type: Type.STRING,
+          description: "A title summarizing the analysis of the user's audio recording. Make the title in gen z filipino with a touch of formality",
+        },
         psychology_feedback: {
           type: Type.STRING,
           description:

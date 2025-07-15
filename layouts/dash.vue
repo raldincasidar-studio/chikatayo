@@ -1,14 +1,17 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-toolbar-title>ChikaTayo</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon @click="toggleDrawer">
+      <v-btn icon @click="$router.back()" v-if="$route.path !== '/dashboard'">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+      <v-btn icon @click="toggleDrawer" v-else>
         <v-icon>mdi-menu</v-icon>
       </v-btn>
+      <v-toolbar-title>ChikaTayo</v-toolbar-title>
+      <v-spacer></v-spacer>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app temporary>
+    <v-navigation-drawer v-model="drawer" app temporary location="left">
       <v-list density="compact" nav>
         <v-list-item
           v-for="item in navigations"
@@ -19,6 +22,12 @@
           <template v-slot:prepend>
             <v-icon :icon="item.icon" />
           </template>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <template v-slot:prepend>
+            <v-icon>mdi-logout</v-icon>
+          </template>
+          <v-list-item-title>Logout</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -38,11 +47,16 @@ const drawer = ref(false);
 
 const navigations = [
   { title: "Dashboard", to: "/dashboard", icon: "mdi-view-dashboard" },
-  { title: "Users", to: "/users", icon: "mdi-account-multiple" },
+  { title: "Settings", to: "/settings", icon: "mdi-cog" },
 ];
 
 function toggleDrawer() {
   drawer.value = !drawer.value;
+}
+
+function logout() {
+  document.cookie = "token=; Path=/; Max-Age=0;";
+  window.location.href = "/";
 }
 </script>
 

@@ -14,9 +14,7 @@
         <h1 class="text-center mt-12">Ano ang emosyon mo ngayon?</h1>
         <v-row>
           <v-col cols="12" class="text-center py-10 pb-0">
-            <v-icon size="100" :color="emotionLevel > 5 ? 'green' : 'blue'">{{
-              emotionLevel > 5 ? "mdi-emoticon-happy" : "mdi-emoticon-sad"
-            }}</v-icon>
+            <v-icon size="100" :color="emotionLevel > 5 ? 'green' : 'blue'">{{ emotionLevel > 5 ? "mdi-emoticon-happy" : "mdi-emoticon-sad" }}</v-icon>
             <h4>{{ emotionLevel }}: {{ emotions[emotionLevel - 1] }}</h4>
           </v-col>
           <v-col cols="12">
@@ -34,9 +32,7 @@
             </v-slider>
           </v-col>
         </v-row>
-        <v-btn color="primary" class="my-4" block size="x-large" @click="step = 2"
-          >Simulan</v-btn
-        >
+        <v-btn color="primary" class="my-4" block size="x-large" @click="handleSimulanClick">Simulan</v-btn>
       </div>
       <div class="step-2" v-if="step == 2">
         <!-- Display audio recording graph here -->
@@ -56,9 +52,7 @@
             <v-icon size="100" color="primary">mdi-emoticon-happy</v-icon>
         </div>
         <p class="mt-12" style="font-size: 1.5rem; line-height: 3rem;">{{ result.reply }}</p>
-        <v-btn color="secondary" class="mt-10" block size="x-large" to="/dashboard"
-          >Bumalik sa Dashboard!</v-btn
-        >
+        <v-btn color="secondary" class="mt-10" block size="x-large" to="/dashboard">Bumalik sa Dashboard!</v-btn>
       </div>
   </div>
 </template>
@@ -105,9 +99,25 @@ let shouldUpload = false;
 const result = ref({
     reply: '',
 });
-async function startAudio() {
+
+async function handleSimulanClick() {
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    step.value = 2;
+  } catch (err) {
+    console.error("Error accessing microphone:", err);
+    alert("Could not access microphone. Please check permissions and try again.");
+  }
+}
+
+function startRecordingAndVisualization() {
+  try {
+    if (!stream) {
+      console.error("Microphone stream not available.");
+      alert("Could not access microphone. Please ensure permissions are granted.");
+      step.value = 1; // Go back to previous step
+      return;
+    }
 
     mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
 
@@ -164,8 +174,8 @@ async function startAudio() {
     dataArray = new Uint8Array(bufferLength);
     draw();
   } catch (err) {
-    console.error("Error accessing microphone:", err);
-    alert("Could not access microphone. Please check permissions and try again.");
+    console.error("Error setting up audio recording:", err);
+    alert("An error occurred during audio setup. Please try again.");
   }
 }
 
@@ -226,7 +236,7 @@ function draw() {
 watch(step, (newStep, oldStep) => {
   if (newStep === 2) {
     nextTick(() => {
-      startAudio();
+      startRecordingAndVisualization();
     });
   } else if (oldStep === 2) {
     // Clean up when navigating away from step 2 without finishing
