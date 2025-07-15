@@ -8,7 +8,7 @@
             <v-icon size="100" class="mb-4" color="primary">mdi-account</v-icon>
           <h1 class="text-h4 font-weight-bold">Chika Tayo</h1>
           <p class="text-subtitle-1">
-            Your personal voice diary and AI Therapy
+            Ange iyong personal na voice diary at AI therapy app
           </p>
         </v-col>
       </v-row>
@@ -41,11 +41,11 @@
                 >Login</v-btn
               >
             <div class="d-flex justify-space-between">
-              <a href="#" class="text-decoration-none">Forgot Password</a>
-              <v-btn to="/signup" class="text-decoration-none" variant="text" color="primary">Sign up</v-btn>
+              <a href="#" class="text-decoration-none">Nalimutan ang password</a>
+              <v-btn to="/signup" class="text-decoration-none" variant="text" color="primary">Mag-Sign Up</v-btn>
             </div>
             <p class="text-center mt-4 text-grey">
-              Need help? <a href="#" class="text-decoration-none">Contact us</a>
+              Need help? <a href="#" class="text-decoration-none">I-message kami</a>
             </p>
           </v-form>
         </v-col>

@@ -8,7 +8,7 @@
             <v-icon size="100" color="primary">mdi-account</v-icon>
           <h1 class="text-h4 font-weight-bold">Chika Tayo</h1>
           <p class="text-subtitle-1">
-            Your personal voice diary and AI Therapy
+            Ange iyong personal na voice diary at AI therapy app
           </p>
         </v-col>
       </v-row>
@@ -84,7 +84,7 @@
                 block
                 size="large"
                 class="my-3"
-                >Sign Up</v-btn
+                >Mag-Sign Up</v-btn
               >
               <v-btn
                 type="submit"
@@ -92,13 +92,13 @@
                 to="/"
                 block
                 size="large"
-                variant="text"
+                variant="outlined"
                 class="mt-0"
-                >Login</v-btn
+                >May account na? Mag Login</v-btn
               >
             </div>
             <p class="text-center mt-4 text-grey">
-              Need help? <a href="#" class="text-decoration-none">Contact us</a>
+              Need help? <a href="#" class="text-decoration-none">I-message kami</a>
             </p>
           </v-form>
         </v-col>

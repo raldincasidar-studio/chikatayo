@@ -444,44 +444,53 @@ async function analyzeAudio(audioFilePath) {
 
     // 2. Define the desired JSON output structure
     const responseSchema = {
-    type: Type.ARRAY,
-    items: {
-      type: Type.OBJECT,
-      properties: {
-        title: {
-          type: Type.STRING,
-          description: "A title summarizing the analysis of the user's audio recording. Make the title in gen z filipino with a touch of formality",
-        },
-        psychology_feedback: {
-          type: Type.STRING,
-          description:
-            "Act as a professional psychologist and therapist. The user has uploaded an audio recording of their thoughts. Listen carefully to the audio and analyze it for signs of stress, confidence, emotional struggles, and mental state. Provide psychological feedback based on this analysis using Gen Z Tagalog—blend casual Filipino with Gen Z slang (e.g., 'lowkey', 'di ko na keri', 'nakakapagod besh', etc.). Speak in a warm, validating, and non-judgmental tone like a trusted ate/kuya/bestie. Be therapeutic but relatable.",
-        },
-        audio_transcribe: {
-          type: Type.STRING,
-          description:
-            "Transcribe the uploaded voice recording as accurately as possible. Capture the user's thoughts word-for-word, maintaining natural phrasing, tone, and any emotional cues if present.",
-        },
-        list_of_goals_generated: {
-          type: Type.ARRAY,
-          items: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          title: {
             type: Type.STRING,
+            description:
+              "Create a title that captures the overall theme or emotional state from the user's audio recording. Use a Gen Z-style Filipino phrase with a touch of formality—something catchy yet sincere that reflects what the user might be going through.",
           },
-          description:
-            "Based on the transcription of the user's audio, generate a list of 3 to 5 actionable goals that the user can take to improve their mental and emotional well-being. Goals should be relevant, realistic, and supportive of the user's expressed concerns or state of mind.",
+          psychology_feedback: {
+            type: Type.STRING,
+            description:
+              "Act like a professional psychologist who speaks like a trusted kuya or best friend. Analyze the user's emotional state, tone, and what they said in the audio. Then give thoughtful psychological insights and emotional validation in casual but respectful Tagalog. Use natural Gen Z Filipino expressions (e.g., 'lowkey', 'nakakapagod besh', 'di ko na kaya', etc.), but avoid being too slangy or insensitive. Prioritize comfort, warmth, and understanding. Make your tone feel like a heartfelt convo with someone who truly cares.",
+          },
+          audio_transcribe: {
+            type: Type.STRING,
+            description:
+              "Transcribe the user's audio recording as accurately as possible. Keep the phrasing natural and true to how they expressed themselves, including emotional cues if any (e.g., sighs, pauses, voice cracking).",
+          },
+          list_of_goals_generated: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.STRING,
+            },
+            description:
+              "From the transcription, extract 3 to 5 practical and supportive goals that the user can pursue to improve their mental and emotional health. Goals should be aligned with their current emotional needs and framed in a friendly, doable way—parang payo ng kuya or tropa.",
+          },
         },
+        propertyOrdering: [
+          "psychology_feedback",
+          "audio_transcribe",
+          "list_of_goals_generated",
+        ],
       },
-      propertyOrdering: [
-        "psychology_feedback",
-        "audio_transcribe",
-        "list_of_goals_generated",
-      ],
-    },
-  };
+    };
 
     // 3. Construct the prompt for the Gemini model
-    const prompt = `You are a professional psychologist and therapist. A user has uploaded an audio recording expressing their thoughts and feelings. Your job is to carefully listen to and analyze the voice recording. Understand the emotions, concerns, and possible mental health needs of the user based on what they say and how they say it. Reply to the user with empathy and care using Gen Z Tagalog language—a mix of casual Tagalog and Gen Z slang (e.g., 'lowkey', 'sobrang drained', 'di ko na keri', etc.)—while still being therapeutic and supportive. Your tone should be warm, non-judgmental, and relatable. Validate their feelings and offer insights or gentle advice in a way that feels like a safe convo with a trusted ate/kuya/bestie.`;
+    const prompt = `
+    You are a male human psychologist who acts like a supportive kuya or best friend. A user has uploaded an audio recording where they express their current thoughts and emotions. Your job is to deeply understand what the user is feeling by listening to how they speak and what they say.
 
+    Then, respond to them in **casual, conversational Tagalog**—not too formal, not too slangy. You can use modern Gen Z expressions naturally (like "di ko na keri", "lowkey", "nakakapagod", etc.), but always keep a tone of empathy, respect, and care.
+
+    Your tone should feel like you're talking to someone close to you: comforting, warm, and non-judgmental. Provide meaningful psychological insights, emotional validation, and suggest helpful next steps or goals to improve their mental well-being.
+
+    Think of this as a deep, safe convo between two people—ikaw yung taong makikinig at mag-aalaga.
+    `;
+    
     // 4. Select the Gemini model and configure it to return JSON
     const model = ai.chats.create({ model: 'gemini-2.5-pro'})
 

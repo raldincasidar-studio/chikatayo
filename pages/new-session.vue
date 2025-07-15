@@ -11,7 +11,7 @@
     </div>
   <div class="steps" v-else>
       <div class="step-1" v-if="step == 1">
-        <h1 class="text-center mt-12">Ano ang emosyon mo ngayon?</h1>
+        <h1 class="text-center mt-12">Anong nararamdaman mo ngayon?</h1>
         <v-row>
           <v-col cols="12" class="text-center py-10 pb-0">
             <v-icon size="100" :color="emotionLevel > 5 ? 'green' : 'blue'">{{ emotionLevel > 5 ? "mdi-emoticon-happy" : "mdi-emoticon-sad" }}</v-icon>
@@ -35,9 +35,9 @@
         <v-btn color="primary" class="my-4" block size="x-large" @click="handleSimulanClick">Simulan</v-btn>
       </div>
       <div class="step-2" v-if="step == 2">
-        <h1 class="text-center mt-12 mb-3">Ano ang nasa isip mo o nararamdaman mo ngayon?</h1>
+        <h1 class="text-center mt-12 mb-3">Nandito ako para makinig. Anong gusto mong ikwento?</h1>
         <!-- Display audio recording graph here -->
-        <p class="text-center text-grey">Nakikinig kami ...</p>
+        <p class="text-center text-grey">Nakikinig ako ...</p>
         <canvas ref="canvasRef" class="w-100"></canvas>
         <v-btn
           color="primary"

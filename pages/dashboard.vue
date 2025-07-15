@@ -2,7 +2,7 @@
 
 <v-row class="my-12">
     <v-col cols="12" class="px-0">
-        <h2 class="text-h5 font-weight-bold text-center my-3">Mood Progress</h2>
+        <h2 class="text-h5 font-weight-bold text-center my-3">Iyong Mood Journey</h2>
         <Line :data="chartData" :options="chartOptions" v-if="Object.keys(chartData).length" />
     </v-col>
 </v-row>
@@ -16,7 +16,7 @@
 
     <v-row class="my-12">
         <v-col cols="12">
-            <h2 class="text-h5 font-weight-bold">Mga Diary</h2>
+            <h2 class="text-h5 font-weight-bold">Mga Diary mo</h2>
         </v-col>
         <v-col cols="12">
             <div class="preloader my-12 d-flex flex-column align-center justify-center" v-if="loading">
