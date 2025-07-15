@@ -8,7 +8,7 @@
             <v-icon size="100" class="mb-4" color="primary">mdi-account</v-icon>
           <h1 class="text-h4 font-weight-bold">Chika Tayo</h1>
           <p class="text-subtitle-1">
-            Ange iyong personal na voice diary at AI therapy app
+            Ang iyong personal na voice diary at AI therapy app
           </p>
         </v-col>
       </v-row>
