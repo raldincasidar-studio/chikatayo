@@ -2,7 +2,7 @@
   <v-container
     class="px-4 my-26 h-100 d-flex align-center justify-center flex-column"
   >
-    <div class="login-form w-100">
+    <div class="login-form w-100" v-if="!isLoading">
       <v-row class="mb-4">
         <v-col cols="12" class="text-center">
             <v-icon size="100" class="mb-4" color="primary">mdi-account</v-icon>
@@ -51,6 +51,14 @@
         </v-col>
       </v-row>
     </div>
+    <div v-else style="text-align: center;">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        size="50"
+      ></v-progress-circular>
+      <p class="mt-4 text-grey">Loading...</p>
+    </div>
   </v-container>
 </template>
 
@@ -78,9 +86,19 @@ async function login() {
     alert(`Error: ${error.value}`);
   }
 
-  if (response.token) {
+  if (response?.token) {
     document.cookie = `token=${response.token}; Path=/; Max-Age=31536000;`;
     router.push('/dashboard');
   }
 }
+
+const isLoading = ref(true);
+onMounted(() => {
+  if (useCookie('token').value) {
+    router.push('/dashboard');
+  }
+
+  console.log('cookie: ', useCookie('token').value);
+  isLoading.value = false;
+})
 </script>

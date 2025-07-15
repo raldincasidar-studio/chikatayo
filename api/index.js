@@ -65,6 +65,7 @@ async function securityMiddleware(req, res, next) {
             // ignore
             console.error(err);
             res.status(401).json({ message: 'Please login again' });
+            next();
         }
     }
 
@@ -81,11 +82,11 @@ app.post('/api/login', async (req, res) => {
     const user = await db.collection('users').findOne({ email });
 
     if (!user) {
-        return res.status(401).json({ message: 'Email is not found' });
+        return res.status(400).json({ message: 'Email is not found' });
     }
 
     if (password !== user.password) {
-        return res.status(401).json({ message: 'Password is incorrect' });
+        return res.status(400).json({ message: 'Password is incorrect' });
     }
 
     res.json({ message: 'Login successfully!', token: generateToken(user) });

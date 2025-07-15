@@ -150,5 +150,16 @@ async function signup() {
 
   router.push('/dashboard')
 }
+
+
+const isLoading = ref(true);
+onMounted(() => {
+  if (useCookie('token').value) {
+    router.push('/dashboard');
+  }
+
+  console.log('cookie: ', useCookie('token').value);
+  isLoading.value = false;
+})
 </script>
 
