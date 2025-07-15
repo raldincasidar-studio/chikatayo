@@ -35,7 +35,9 @@
         <v-btn color="primary" class="my-4" block size="x-large" @click="handleSimulanClick">Simulan</v-btn>
       </div>
       <div class="step-2" v-if="step == 2">
+        <h1 class="text-center mt-12 mb-3">Ano ang nasa isip mo o nararamdaman mo ngayon?</h1>
         <!-- Display audio recording graph here -->
+        <p class="text-center text-grey">Nakikinig kami ...</p>
         <canvas ref="canvasRef" class="w-100"></canvas>
         <v-btn
           color="primary"
@@ -44,7 +46,7 @@
           size="x-large"
           @click="finishRecording"
           :loading="loading"
-          >Pindutin lamang kung tapos na</v-btn
+          >Tapusin/Done</v-btn
         >
       </div>
       <div class="step-3 text-center" v-if="step == 3">
@@ -212,7 +214,7 @@ function draw() {
   canvasCtx.fillStyle = "rgb(255, 255, 255)";
   canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
   canvasCtx.lineWidth = 2;
-  canvasCtx.strokeStyle = "rgb(0, 0, 0)";
+  canvasCtx.strokeStyle = "#1E88E5";
   canvasCtx.beginPath();
 
   const sliceWidth = (WIDTH * 1.0) / bufferLength;

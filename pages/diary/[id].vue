@@ -32,8 +32,16 @@
             <p style="font-size: 1.2rem; line-height: 2.4rem;" class="text-grey-darken-3">{{ diary?.analysis?.psychology_feedback }}</p>
         </div>
     </div>
-    <div v-else>
-        <p>Loading...</p>
+    <div v-else class="my-12 text-center">
+        <div class="preloader my-12 d-flex flex-column align-center justify-center" v-if="loading">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                size="50"
+            ></v-progress-circular>
+            <p class="mt-4 text-grey">Niloload namin ang iyong diary</p>
+        </div>
+
     </div>
 </template>
 

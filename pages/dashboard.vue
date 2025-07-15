@@ -1,8 +1,9 @@
 <template>
+
 <v-row class="my-12">
-    <v-col cols="12">
-        <h2 class="text-h5 font-weight-bold">Ang progress mo ngayong Week</h2>
-        <Line :data="chartData" :options="chartOptions" />
+    <v-col cols="12" class="px-0">
+        <h2 class="text-h5 font-weight-bold text-center my-3">Mood Progress</h2>
+        <Line :data="chartData" :options="chartOptions" v-if="Object.keys(chartData).length" />
     </v-col>
 </v-row>
 
@@ -55,6 +56,7 @@ import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js'
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { color } from 'chart.js/helpers';
 
 dayjs.extend(relativeTime)
 
@@ -66,20 +68,25 @@ definePageMeta({
   layout: "dash",
 });
 
-const chartData = {
-  labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-  datasets: [
-    {
-      label: 'Weekly Progress',
-      backgroundColor: '#3F51B5',
-      data: [1, 3, 5, 7, 2, 4, 6]
-    }
-  ]
-}
+const chartData = ref({});
 
 const chartOptions = {
 //   responsive: true,
-//   maintainAspectRatio: false
+//   maintainAspectRatio: false,
+  scales: {
+    y: {
+      min: 1,
+      max: 10
+    }
+  },
+  elements: {
+    line: {
+      borderWidth: 3,
+    },
+    point: {
+      radius: 5
+    }
+  }
 }
 
 const diaries = ref([]);
@@ -108,8 +115,37 @@ async function postTest() {
   console.log(res);
 }
 
+const statistics = ref([]);
+const statistics_date = ref([]);
+async function fetchStatistics() {
+  const res = await myFetch("/statistics", {});
+
+  if (error.value) {
+    alert(`Error fetching statistics: ${error.value}`);
+  }
+
+  console.log(res);
+
+  statistics.value = res.emotions;
+  statistics_date.value = res.dates;
+
+
+
+  chartData.value = {
+    labels: res.dates.map(d => dayjs(d).fromNow()),
+    datasets: [
+      {
+        label: 'Weekly Progress',
+        backgroundColor: '#1E88E5',
+        data: res.emotions
+      }
+    ]
+  }
+}
+
 onMounted(() => {
   fetchDiaries();
+  fetchStatistics();
 });
 
 

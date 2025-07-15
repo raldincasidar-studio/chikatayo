@@ -124,6 +124,49 @@ app.post('/api/users', async (req, res) => {
     res.json({ message: 'User created!', result, token: generateToken(user) });
 });
 
+app.get('/api/user', securityMiddleware, async (req, res) => {
+    res.json({ message: 'User found!', user: req.user });
+})
+
+// update user info (with update password)
+app.put('/api/user', securityMiddleware, async (req, res) => {
+    const { firstName, middleName, lastName, email, password } = req.body;
+    const user = {
+        firstName,
+        middleName,
+        lastName,
+        email,
+        password
+    };
+
+    if (!firstName || !lastName || !email) {
+        return res.status(400).json({ message: 'First name, Last name, Email are required' });
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Email is not valid' });
+    }
+
+    if (password) {
+        if (password.length < 6) {
+            return res.status(400).json({ message: 'Password should be at least 6 characters' });
+        }
+    } else {
+        delete user.password;
+    }
+
+    const result = await db.collection('users').updateOne({ _id: req.user._id }, { $set: user });
+    res.json({ message: 'User updated!', result });
+});
+
+// request data deletion
+app.post('/api/request-deletion', securityMiddleware, async (req, res) => {
+    const { email } = req.body;
+    const result = await db.collection('users').updateOne({ _id: req.user._id }, { $set: { email } });
+    res.json({ message: 'Data deletion request sent!', result });
+});
+
 
 
 app.post('/api/diary', securityMiddleware, async (req, res) => {
@@ -179,6 +222,38 @@ app.get('/api/diary/:id', securityMiddleware, async (req, res) => {
 })
 
 
+// get statistics (emotion for these past 7 days)
+app.get('/api/statistics', securityMiddleware, async (req, res) => {
+  const limit = 7;
+
+  const diaries = await db.collection('diary').find({
+    user: new ObjectId(req.user._id)
+  }, { sort: { date: -1 }, limit }).toArray();
+
+  const emotions = diaries.map(diary => {
+    const emotionArray = [
+      "DEPRESSED",
+      "SAD",
+      "ANGRY",
+      "FRUSTRATED",
+      "NEUTRAL",
+      "HOPEFUL",
+      "PEACEFUL",
+      "JOYFUL",
+      "HAPPY",
+      "ECSTATIC",
+    ];
+    return emotionArray.indexOf(diary.emotion) + 1;
+  });
+
+  const dates = diaries.map(diary => diary.date);
+
+  res.json({
+    message: 'Statistics fetched!',
+    emotions,
+    dates
+  });
+});
 
 
 
