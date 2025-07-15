@@ -24,6 +24,7 @@ export default function useMyFetch() {
 
       if (res.status === 401) {
         if (typeof window !== 'undefined') {
+          document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
           window.location.href = '/';
         }
       } else if (!res.ok) {
